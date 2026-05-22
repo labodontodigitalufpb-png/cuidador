@@ -154,6 +154,8 @@ const I18N = {
       extremelyDifficult: "Extremamente difícil",
       sent: "Registro enviado.",
       missingEndpoint: "Não foi possível registrar os dados.",
+      sending: "Enviando registro...",
+      fillRequired: "Preencha os campos obrigatórios destacados antes de enviar.",
       clinicalDiagnosis: "Diagnóstico clínico",
       priorityLabel: "Prioridade",
       axis2Label: "Eixo 2",
@@ -272,6 +274,8 @@ const I18N = {
       extremelyDifficult: "Extremely difficult",
       sent: "Record sent.",
       missingEndpoint: "Unable to register the data.",
+      sending: "Sending record...",
+      fillRequired: "Fill in the highlighted required fields before sending.",
       clinicalDiagnosis: "Clinical diagnosis",
       priorityLabel: "Priority",
       axis2Label: "Axis 2",
@@ -428,6 +432,8 @@ const I18N = {
       extremelyDifficult: "Extremadamente difícil",
       sent: "Registro enviado.",
       missingEndpoint: "No fue posible registrar los datos.",
+      sending: "Enviando registro...",
+      fillRequired: "Complete los campos obligatorios destacados antes de enviar.",
       clinicalDiagnosis: "Diagnóstico clínico",
       priorityLabel: "Prioridad",
       axis2Label: "Eje 2",
@@ -514,7 +520,13 @@ let currentLang = localStorage.getItem("cuidador-sus-lang") || "pt";
 const form = document.querySelector("#dtmForm");
 const steps = [...document.querySelectorAll(".step")];
 const views = [...document.querySelectorAll(".view")];
+const submitStatus = document.createElement("p");
 let currentStep = 0;
+
+submitStatus.className = "submit-status";
+submitStatus.setAttribute("role", "status");
+submitStatus.setAttribute("aria-live", "polite");
+form.querySelector(".actions").prepend(submitStatus);
 
 function copyItems(items) {
   return JSON.parse(JSON.stringify(items));
@@ -911,9 +923,41 @@ function setLanguage(lang, rerender = true) {
   if (currentStep === 5) renderResults();
 }
 
+function setSubmitStatus(message = "", type = "") {
+  submitStatus.textContent = message;
+  submitStatus.dataset.type = type;
+}
+
+function validateBeforeSubmit() {
+  const invalidField = form.querySelector(":invalid");
+  if (!invalidField) return true;
+
+  const invalidView = invalidField.closest(".view");
+  if (invalidView) {
+    go(Number(invalidView.dataset.view));
+  }
+
+  setSubmitStatus(language().ui.fillRequired, "error");
+  setTimeout(() => invalidField.reportValidity(), 50);
+  return false;
+}
+
 async function sendPayload(payload) {
   const endpoint = SEND_ENDPOINT;
   if (!endpoint) return { ok: false, message: language().ui.missingEndpoint };
+
+  const body = new URLSearchParams();
+  body.set("payload", JSON.stringify(payload));
+
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body.toString()], {
+      type: "application/x-www-form-urlencoded;charset=UTF-8"
+    });
+    if (navigator.sendBeacon(endpoint, blob)) {
+      await new Promise((resolve) => setTimeout(resolve, 1800));
+      return { ok: true, message: language().ui.sent };
+    }
+  }
 
   return new Promise((resolve, reject) => {
     const frameName = `cuidador-submit-${Date.now()}`;
@@ -937,9 +981,6 @@ async function sendPayload(payload) {
 
     iframe.name = frameName;
     iframe.hidden = true;
-    iframe.addEventListener("load", finish, { once: true });
-    iframe.addEventListener("error", finish, { once: true });
-
     submitForm.method = "POST";
     submitForm.action = endpoint;
     submitForm.target = frameName;
@@ -955,7 +996,7 @@ async function sendPayload(payload) {
 
     try {
       submitForm.submit();
-      setTimeout(finish, 2500);
+      setTimeout(finish, 2200);
     } catch (error) {
       settled = true;
       cleanup();
@@ -1002,16 +1043,17 @@ form.addEventListener("change", (event) => {
 });
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!form.reportValidity()) return;
+  if (!validateBeforeSubmit()) return;
   const submitButton = event.submitter || form.querySelector('button[type="submit"]');
   submitButton.disabled = true;
+  setSubmitStatus(language().ui.sending, "");
   const payload = { enviadoEm: new Date().toISOString(), ...renderResults() };
   saveDraft();
   try {
     const result = await sendPayload(payload);
-    alert(result.message);
+    setSubmitStatus(result.message, "success");
   } catch (error) {
-    alert(language().ui.missingEndpoint);
+    setSubmitStatus(language().ui.missingEndpoint, "error");
   } finally {
     submitButton.disabled = false;
   }

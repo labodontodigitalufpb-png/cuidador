@@ -536,6 +536,7 @@ input[type="range"].ruler::-moz-range-thumb {
   position: sticky;
   bottom: 0;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 28px;
@@ -543,6 +544,18 @@ input[type="range"].ruler::-moz-range-thumb {
   border-top: 1px solid var(--line);
   border-radius: 0 0 8px 8px;
 }
+
+.submit-status {
+  flex: 1 1 auto;
+  min-height: 24px;
+  margin: 0 auto 0 0;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.submit-status[data-type="success"] { color: var(--ok); }
+.submit-status[data-type="error"] { color: var(--danger); }
 
 button {
   min-height: 42px;
@@ -579,5 +592,6 @@ a { color: var(--navy); }
   .identity-card { padding: 16px; }
   .view { padding: 18px; }
   .actions { flex-wrap: wrap; padding: 12px 18px; }
+  .submit-status { flex-basis: 100%; }
   .actions button { flex: 1 1 42%; }
 }
