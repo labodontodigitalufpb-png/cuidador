@@ -914,15 +914,54 @@ function setLanguage(lang, rerender = true) {
 async function sendPayload(payload) {
   const endpoint = SEND_ENDPOINT;
   if (!endpoint) return { ok: false, message: language().ui.missingEndpoint };
-  const body = new URLSearchParams();
-  body.set("payload", JSON.stringify(payload));
-  const response = await fetch(endpoint, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-    body
+
+  return new Promise((resolve, reject) => {
+    const frameName = `cuidador-submit-${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    const submitForm = document.createElement("form");
+    const input = document.createElement("input");
+    let settled = false;
+
+    const cleanup = () => {
+      setTimeout(() => {
+        iframe.remove();
+        submitForm.remove();
+      }, 1000);
+    };
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve({ ok: true, message: language().ui.sent });
+    };
+
+    iframe.name = frameName;
+    iframe.hidden = true;
+    iframe.addEventListener("load", finish, { once: true });
+    iframe.addEventListener("error", finish, { once: true });
+
+    submitForm.method = "POST";
+    submitForm.action = endpoint;
+    submitForm.target = frameName;
+    submitForm.hidden = true;
+
+    input.type = "hidden";
+    input.name = "payload";
+    input.value = JSON.stringify(payload);
+    submitForm.appendChild(input);
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(submitForm);
+
+    try {
+      submitForm.submit();
+      setTimeout(finish, 2500);
+    } catch (error) {
+      settled = true;
+      cleanup();
+      reject(error);
+    }
   });
-  return { ok: true, message: language().ui.sent };
 }
 
 setLanguage(currentLang, false);
