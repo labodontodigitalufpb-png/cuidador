@@ -946,19 +946,6 @@ async function sendPayload(payload) {
   const endpoint = SEND_ENDPOINT;
   if (!endpoint) return { ok: false, message: language().ui.missingEndpoint };
 
-  const body = new URLSearchParams();
-  body.set("payload", JSON.stringify(payload));
-
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body.toString()], {
-      type: "application/x-www-form-urlencoded;charset=UTF-8"
-    });
-    if (navigator.sendBeacon(endpoint, blob)) {
-      await new Promise((resolve) => setTimeout(resolve, 1800));
-      return { ok: true, message: language().ui.sent };
-    }
-  }
-
   return new Promise((resolve, reject) => {
     const frameName = `cuidador-submit-${Date.now()}`;
     const iframe = document.createElement("iframe");
