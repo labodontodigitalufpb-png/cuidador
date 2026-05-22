@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CuidaDor SUS</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <img src="assets/cuidador-logo.png" alt="CuidaDor SUS">
+        <div>
+          <strong>CuidaDor SUS</strong>
+          <span>Identificação de Disfunção Temporomandibular no SUS</span>
+        </div>
+      </div>
+      <div class="header-mark" aria-hidden="true">
+        <img src="assets/cuidador-logo.png" alt="">
+      </div>
+    </header>
+
+    <main class="shell">
+      <aside class="sidebar" aria-label="Módulos do formulário">
+        <button class="step is-active" data-step="0">1. Identificação</button>
+        <button class="step" data-step="1">2. Brief DC/TMD</button>
+        <button class="step" data-step="2">3. Exame</button>
+        <button class="step" data-step="3">4. OHIP-TMD</button>
+        <button class="step" data-step="4">5. Eixo 2</button>
+        <button class="step" data-step="5">6. Resultado</button>
+      </aside>
+
+      <form id="dtmForm" class="panel">
+        <section class="view is-active" data-view="0">
+          <div class="section-title intro-title">
+            <div>
+              <p>Módulo inicial</p>
+              <h1>Identificação</h1>
+            </div>
+            <img src="assets/cuidador-logo.png" alt="">
+          </div>
+          <div class="language-switch" aria-label="Idioma">
+            <button type="button" class="lang-button is-active" data-lang="pt">Português</button>
+            <button type="button" class="lang-button" data-lang="en">English</button>
+            <button type="button" class="lang-button" data-lang="es">Español</button>
+          </div>
+          <div class="identity-card">
+          <div class="grid two">
+            <label>Nome<input name="nome" required autocomplete="name"></label>
+            <label>Idade<input name="idade" type="number" min="0" max="120" required></label>
+            <label>Sexo
+              <select name="sexo" required>
+                <option value="">Selecione</option>
+                <option>Feminino</option>
+                <option>Masculino</option>
+                <option>Intersexo</option>
+                <option>Prefere não informar</option>
+              </select>
+            </label>
+            <label>Estado civil<input name="estadoCivil"></label>
+            <label>Telefone<input name="telefone" autocomplete="tel"></label>
+            <label>Unidade de Saude<input name="unidadeSaude" required></label>
+          </div>
+          <div class="grid">
+            <label>Endereco<input name="endereco"></label>
+          </div>
+          <div class="grid three">
+            <label>Cidade<input name="cidade"></label>
+            <label>Estado<input name="estado"></label>
+            <label>Pais<input name="pais" value="Brasil"></label>
+          </div>
+          <div class="grid two">
+            <label>Examinador (Cirurgiao Dentista)<input name="examinador" required></label>
+            <label>Especialidade do examinador<input name="especialidade"></label>
+          </div>
+          </div>
+          <div class="lab-footer">
+            <img src="assets/labodigit-logo.jpeg" alt="LABODIGIT - Laboratorio de Odontologia Digital">
+          </div>
+        </section>
+
+        <section class="view" data-view="1">
+          <div class="section-title">
+            <p>Obrigatorio</p>
+            <h1>Brief DC/TMD - Autorrelato</h1>
+          </div>
+          <div id="briefDc"></div>
+        </section>
+
+        <section class="view" data-view="2">
+          <div class="section-title">
+            <p>Obrigatorio</p>
+            <h1>Exame clínico</h1>
+          </div>
+          <div class="exam-block">
+            <h2>1. Movimentos de abertura</h2>
+            <div class="grid three">
+              <label>Abertura sem dor (mm)<input name="aberturaSemDor" type="number" min="0" max="80" required></label>
+              <label>Abertura máxima não assistida (mm)<input name="aberturaMaxima" type="number" min="0" max="80" required></label>
+              <label>Abertura maxima assistida (mm)<input name="aberturaAssistida" type="number" min="0" max="80"></label>
+            </div>
+            <div class="check-grid">
+              <label class="check-button"><input type="checkbox" name="dorAberturaMandibula"> <span>Dor familiar na mandibula durante abertura</span></label>
+              <label class="check-button"><input type="checkbox" name="dorAberturaTemporal"> <span>Dor familiar na tempora durante abertura</span></label>
+              <label class="check-button"><input type="checkbox" name="dorAberturaAtm"> <span>Dor familiar na ATM durante abertura</span></label>
+            </div>
+          </div>
+          <div class="exam-block">
+            <h2>2. Ruidos articulares</h2>
+            <div class="check-grid">
+              <label class="check-button"><input type="checkbox" name="clickDireito"> <span>Clique/estalido direito em abertura ou fechamento</span></label>
+              <label class="check-button"><input type="checkbox" name="clickEsquerdo"> <span>Clique/estalido esquerdo em abertura ou fechamento</span></label>
+              <label class="check-button"><input type="checkbox" name="crepitacaoDireita"> <span>Crepitacao direita</span></label>
+              <label class="check-button"><input type="checkbox" name="crepitacaoEsquerda"> <span>Crepitacao esquerda</span></label>
+            </div>
+          </div>
+          <div class="exam-block">
+            <h2>3. Travamento articular</h2>
+            <div class="check-grid">
+              <label class="check-button"><input type="checkbox" name="travamentoObservado"> <span>Travamento observado no exame</span></label>
+              <label class="check-button"><input type="checkbox" name="limitacaoAbertura"> <span>Limitacao de abertura presente</span></label>
+              <label class="check-button"><input type="checkbox" name="travamentoAberta"> <span>Travamento em boca aberta observado</span></label>
+            </div>
+          </div>
+          <div class="exam-block">
+            <h2>4. Palpacao muscular e ATM</h2>
+            <div id="palpationButtons" class="palpation-grid"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="3">
+          <div class="section-title">
+            <p>Opcional</p>
+            <h1>OHIP-TMD-Br</h1>
+          </div>
+          <div id="ohipItems" class="optional-box"></div>
+        </section>
+
+        <section class="view" data-view="4">
+          <div class="section-title">
+            <p>Opcional</p>
+            <h1>Eixo 2 psicossocial</h1>
+          </div>
+          <div class="optional-box">
+            <h2>Escala Graduada de Dor Crônica (GCPS) - 30 dias</h2>
+            <div id="gcpsItems" class="scale-list"></div>
+            <h2>PHQ-4</h2>
+            <div id="phqItems" class="scale-list"></div>
+            <label>Dificuldade causada pelos problemas
+              <select name="phqDificuldade">
+                <option value="">Não se aplica</option>
+                <option>Nada dificil</option>
+                <option>Um pouco dificil</option>
+                <option>Muito dificil</option>
+                <option>Extremamente dificil</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="view" data-view="5">
+          <div class="section-title">
+            <p>Sintese</p>
+            <h1>Resultado e conduta</h1>
+          </div>
+          <div id="results" class="results"></div>
+        </section>
+
+        <footer class="actions">
+          <button type="button" id="prevBtn">Voltar</button>
+          <button type="button" id="nextBtn">Avançar</button>
+          <button type="submit" class="primary">Salvar e enviar</button>
+        </footer>
+      </form>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
