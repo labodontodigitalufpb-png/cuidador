@@ -902,6 +902,16 @@ function restoreDraftFromObject(obj) {
   syncBriefSkip();
 }
 
+function clearSubmittedForm() {
+  localStorage.removeItem(STORAGE_KEY);
+  form.reset();
+  syncAllPalpation();
+  updateAllRulers();
+  syncBriefSkip();
+  document.querySelector("#results").innerHTML = "";
+  go(0);
+}
+
 function updateRuler(input) {
   const output = input.closest(".ruler-control")?.querySelector("output");
   if (!output) return;
@@ -1176,6 +1186,7 @@ form.addEventListener("submit", async (event) => {
   saveDraft();
   try {
     const result = await sendPayload(payload);
+    if (result.ok) clearSubmittedForm();
     setSubmitStatus(result.message, "success");
   } catch (error) {
     setSubmitStatus(language().ui.missingEndpoint, "error");
