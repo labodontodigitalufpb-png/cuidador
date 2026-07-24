@@ -30,7 +30,7 @@
         <button class="step" data-step="5">6. Resultado</button>
       </aside>
 
-      <form id="dtmForm" class="panel">
+      <form id="dtmForm" class="panel" autocomplete="off">
         <section class="view is-active" data-view="0">
           <div class="section-title intro-title">
             <div>
@@ -46,7 +46,7 @@
           </div>
           <div class="identity-card">
           <div class="grid two">
-            <label>Nome<input name="nome" required autocomplete="name"></label>
+            <label>Nome<input name="nome" required></label>
             <label>Idade<input name="idade" type="number" min="0" max="120" required></label>
             <label>Sexo
               <select name="sexo" required>
@@ -58,7 +58,7 @@
               </select>
             </label>
             <label>Estado civil<input name="estadoCivil"></label>
-            <label>Telefone<input name="telefone" autocomplete="tel"></label>
+            <label>Telefone<input name="telefone"></label>
             <label>Unidade de Saude<input name="unidadeSaude" required></label>
           </div>
           <div class="grid">
@@ -178,6 +178,6 @@
       </form>
     </main>
 
-    <script src="app-20260522-3.js?v=20260723-3"></script>
+    <script src="app-20260522-3.js?v=20260724-1"></script>
   </body>
 </html>
