@@ -221,6 +221,16 @@ input[type="checkbox"], input[type="radio"] {
   color: var(--navy);
 }
 
+.question .question-note {
+  margin-top: 12px;
+  color: var(--danger);
+  font-size: .9rem;
+}
+
+.question.is-skipped {
+  display: none;
+}
+
 .options, .choice-grid, .check-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -416,6 +426,20 @@ input[type="checkbox"], input[type="radio"] {
   border-bottom: 1px solid var(--line);
 }
 
+.gcps-number-row {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.gcps-number-row label {
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 28%);
+  align-items: center;
+}
+
+.gcps-number-row input {
+  max-width: 260px;
+}
+
 .ruler-row strong {
   display: block;
   color: var(--navy);
@@ -426,10 +450,15 @@ input[type="checkbox"], input[type="radio"] {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 2px;
   color: var(--muted);
   font-size: .78rem;
   font-weight: 700;
+}
+
+.ruler-scale {
+  min-width: 0;
+  display: grid;
 }
 
 .ruler-control {
@@ -502,6 +531,30 @@ input[type="range"].ruler::-moz-range-thumb {
 
 .optional-box {
   margin-top: 16px;
+}
+
+.scale-legend,
+.scale-prompt {
+  margin: 8px 0 14px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.scale-legend {
+  border-left: 4px solid var(--teal);
+  border-radius: 4px;
+  padding: 9px 12px;
+  background: #eaf6f3;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.scale-prompt {
+  font-weight: 700;
+}
+
+.gcps-interference-legend {
+  margin-top: 18px;
 }
 
 .results {
@@ -579,7 +632,7 @@ a { color: var(--navy); }
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; padding: 12px; }
   .sidebar { position: static; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .grid.two, .grid.three, .options, .choice-grid, .check-grid, .results, .ruler-row, .yesno-row, .palpation-grid, .multi-buttons { grid-template-columns: 1fr; }
+  .grid.two, .grid.three, .options, .choice-grid, .check-grid, .results, .ruler-row, .yesno-row, .palpation-grid, .multi-buttons, .gcps-number-row label { grid-template-columns: 1fr; }
   .yesno-buttons, .yesno-buttons.compact { width: 100%; max-width: none; }
   .ruler-control { grid-template-columns: 1fr; }
   .app-header { min-height: auto; align-items: flex-start; gap: 10px; flex-direction: column; }
