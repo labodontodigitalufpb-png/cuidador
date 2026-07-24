@@ -2,15 +2,15 @@ const STORAGE_KEY = "cuidador-sus-draft";
 const SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbwjnRhj4RZyRhilMfVuEPPLo3kIzEmHaNgws8WwTSwQZ-3hs-4dCM0Srl2XKj6PQr6v7w/exec";
 
 let briefQuestions = [
-  { id: "sq1", text: "SQ1. Você já teve dor na mandíbula, têmpora, no ouvido ou na frente do ouvido?", type: "yesno", required: true },
-  { id: "sq2", text: "SQ2. Há quanto tempo começou pela primeira vez essa dor?", type: "duration" },
-  { id: "sq3", text: "SQ3. Nos últimos 30 dias, qual opção descreve melhor essa dor?", type: "single", options: [["sem", "Sem dor"], ["intermitente", "A dor vai e volta"], ["constante", "A dor está sempre presente"]] },
-  { id: "sq4", text: "SQ4. Nos últimos 30 dias, essas atividades alteraram a dor na mandíbula ou têmpora?", type: "multiYesNo", items: ["Mastigar alimento duro ou resistente", "Abrir a boca ou mover a mandíbula", "Manter dentes encostados, apertar, ranger ou mascar chiclete", "Falar, beijar ou bocejar"] },
-  { id: "sq5", text: "SQ5. Nos últimos 30 dias, você teve dor de cabeça que incluísse a região da têmpora?", type: "yesno", required: true },
-  { id: "sq6", text: "SQ6. Há quanto tempo começou pela primeira vez essa dor de cabeça na têmpora?", type: "duration" },
-  { id: "sq7", text: "SQ7. Nos últimos 30 dias, atividades mandibulares alteraram essa dor de cabeça?", type: "multiYesNo", items: ["Mastigar alimento duro ou resistente", "Abrir a boca ou mover a mandíbula", "Manter dentes encostados, apertar, ranger ou mascar chiclete", "Falar, beijar ou bocejar"] },
+  { id: "sq1", text: "SQ1. Você já sentiu dor na mandíbula, têmpora (lateral), no ouvido ou na frente do ouvido em qualquer um dos lados?", type: "yesno", required: true },
+  { id: "sq2", text: "SQ2. Há quantos anos ou meses atrás a sua dor de cabeça ou na têmpora começou pela primeira vez?", type: "duration" },
+  { id: "sq3", text: "SQ3. Nos últimos 30 dias, qual das opções abaixo melhor descreve qualquer dor na sua mandíbula, têmpora, no ouvido ou na frente do ouvido (em qualquer um dos lados)?", note: "Se a resposta for “Sem dor”, pule para a pergunta SQ5.", type: "single", options: [["sem", "Sem dor"], ["intermitente", "A dor vai e volta"], ["constante", "A dor está sempre presente"]] },
+  { id: "sq4", text: "SQ4. Nos últimos 30 dias, alguma dessas atividades mudou sua dor na mandíbula ou na têmpora? Considere dor em qualquer lado do rosto e mudanças para melhor ou pior.", type: "multiYesNo", items: ["Mastigar alimento duro ou resistente", "Abrir a boca ou mover a mandíbula", "Manter dentes encostados, apertar, ranger ou mascar chiclete", "Falar, beijar ou bocejar"] },
+  { id: "sq5", text: "SQ5. Nos últimos 30 dias, você teve dor de cabeça que incluísse as áreas das têmporas (lateral) da sua cabeça?", type: "yesno", required: true },
+  { id: "sq6", text: "SQ6. Há quantos anos ou meses atrás a sua dor nas têmporas começou pela primeira vez?", type: "duration" },
+  { id: "sq7", text: "SQ7. Nos últimos 30 dias, alguma dessas atividades mudou sua dor de cabeça na região da têmpora? Considere qualquer lado da cabeça e mudanças para melhor ou pior.", type: "multiYesNo", items: ["Mastigar alimento duro ou resistente", "Abrir a boca ou mover a mandíbula", "Manter dentes encostados, apertar, ranger ou mascar chiclete", "Falar, beijar ou bocejar"] },
   { id: "sq8", text: "SQ8. Nos últimos 30 dias, houve ruído na ATM ao mover ou usar a mandíbula?", type: "yesno", required: true },
-  { id: "sq9", text: "SQ9. A mandíbula já travou ou prendeu, mesmo por um momento, de modo que não abrisse totalmente?", type: "yesno", required: true },
+  { id: "sq9", text: "SQ9. Você já teve a mandíbula travada ou “presa”, mesmo que por um momento, de modo que ela não abrisse totalmente?", type: "yesno", required: true },
   { id: "sq10", text: "SQ10. O travamento foi grave o suficiente para limitar abertura bucal e interferir na alimentação?", type: "yesno" },
   { id: "sq11", text: "SQ11. Nos últimos 30 dias, a mandíbula travou sem abrir totalmente e depois destravou?", type: "yesno", required: true },
   { id: "sq12", text: "SQ12. Atualmente a mandíbula está travada ou limitada de modo que não abre totalmente?", type: "yesno" },
@@ -44,12 +44,12 @@ let ohipItems = [
 ];
 
 let gcpsItems = [
-  "Dor facial agora",
-  "Pior dor facial nos últimos 30 dias",
-  "Dor facial média nos últimos 30 dias",
-  "Interferência nas atividades diárias",
-  "Interferencia nas atividades recreativas, sociais e familiares",
-  "Interferência na capacidade de trabalhar, incluindo tarefas domésticas"
+  "Como você avaliaria sua dor facial AGORA?",
+  "Nos ÚLTIMOS 30 DIAS, como você avaliaria sua PIOR dor facial?",
+  "Nos ÚLTIMOS 30 DIAS, EM MÉDIA, como você avaliaria sua dor facial?",
+  "Nos ÚLTIMOS 30 DIAS, o quanto a dor facial interferiu nas suas ATIVIDADES DIÁRIAS?",
+  "Nos ÚLTIMOS 30 DIAS, o quanto a dor facial interferiu nas suas ATIVIDADES RECREATIVAS, SOCIAIS E FAMILIARES?",
+  "Nos ÚLTIMOS 30 DIAS, o quanto a dor facial interferiu na sua CAPACIDADE DE TRABALHAR, incluindo tarefas domésticas?"
 ];
 
 let phqItems = [
@@ -107,7 +107,20 @@ const I18N = {
       palpation: "4. Palpação muscular e ATM",
       axis2: "Eixo 2 psicossocial",
       gcpsTitle: "Escala Graduada de Dor Crônica (GCPS) - 30 dias",
-      phqDifficulty: "Dificuldade causada pelos problemas",
+      ohipLegend: "Nunca (0) / Raramente (1) / Às vezes (2) / Repetidamente (3) / Sempre (4)",
+      gcpsPainLegend: "0 — Sem dor / 10 — Dor tão intensa quanto possível",
+      gcpsInterferenceLegend: "Sem interferência (0) — Incapaz de realizar quaisquer atividades (10)",
+      gcpsPainDays: "Nos últimos 30 dias, em quantos dias você teve dor facial?",
+      gcpsDisabilityDays: "Nos últimos 30 dias, por quantos dias a dor facial impediu você de realizar suas atividades habituais?",
+      gcpsDaysHint: "Informe um valor de 0 a 30 dias",
+      gcpsIncomplete: "GCPS incompleta: informe os dias com dor e os dias de incapacidade.",
+      interferenceLabel: "Interferência",
+      disabilityPointsLabel: "Pontos de incapacidade",
+      gcpsGradeLabel: "Grau de dor crônica",
+      gcpsGrades: ["0 — Sem dor", "I — Dor de baixa intensidade, sem incapacidade", "II — Dor de alta intensidade, sem incapacidade", "III — Moderadamente limitante", "IV — Gravemente limitante"],
+      phqPrompt: "Nas ÚLTIMAS 2 SEMANAS, você ficou incomodado(a) por algum destes problemas?",
+      phqLegend: "Nenhuma vez (0) / Vários dias (1) / Mais da metade dos dias (2) / Quase todos os dias (3)",
+      phqDifficulty: "Se você marcou algum dos problemas, o quanto esses problemas têm dificultado você para trabalhar, cuidar das coisas de casa, ou se relacionar com outras pessoas?",
       resultTitle: "Resultado e conduta",
       synthesis: "Síntese",
       sendTitle: "Envio dos dados",
@@ -143,13 +156,13 @@ const I18N = {
       sometimes: "Às vezes",
       repeatedly: "Repetidamente",
       always: "Sempre",
-      none: "Nenhuma",
+      none: "Nenhuma vez",
       severalDays: "Vários dias",
       halfDays: "Metade+",
       nearlyEveryDay: "Quase todos",
       noneApply: "Não se aplica",
       notDifficult: "Nada difícil",
-      somewhatDifficult: "Um pouco difícil",
+      somewhatDifficult: "Pouco difícil",
       veryDifficult: "Muito difícil",
       extremelyDifficult: "Extremamente difícil",
       sent: "Registro enviado.",
@@ -227,7 +240,20 @@ const I18N = {
       palpation: "4. Muscle and TMJ palpation",
       axis2: "Psychosocial Axis 2",
       gcpsTitle: "Graded Chronic Pain Scale (GCPS) - 30 days",
-      phqDifficulty: "Difficulty caused by these problems",
+      ohipLegend: "Never (0) / Rarely (1) / Sometimes (2) / Repeatedly (3) / Always (4)",
+      gcpsPainLegend: "0 — No pain / 10 — Pain as intense as could be",
+      gcpsInterferenceLegend: "No interference (0) — Unable to carry on any activities (10)",
+      gcpsPainDays: "In the last 30 days, on how many days did you have facial pain?",
+      gcpsDisabilityDays: "In the last 30 days, for how many days did facial pain prevent you from carrying out your usual activities?",
+      gcpsDaysHint: "Enter a value from 0 to 30 days",
+      gcpsIncomplete: "Incomplete GCPS: enter days with pain and disability days.",
+      interferenceLabel: "Interference",
+      disabilityPointsLabel: "Disability points",
+      gcpsGradeLabel: "Chronic pain grade",
+      gcpsGrades: ["0 — No pain", "I — Low-intensity pain, without disability", "II — High-intensity pain, without disability", "III — Moderately limiting", "IV — Severely limiting"],
+      phqPrompt: "Over the LAST 2 WEEKS, how often have you been bothered by any of the following problems?",
+      phqLegend: "Not at all (0) / Several days (1) / More than half the days (2) / Nearly every day (3)",
+      phqDifficulty: "If you checked any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?",
       resultTitle: "Results and management",
       synthesis: "Summary",
       sendTitle: "Data submission",
@@ -314,11 +340,11 @@ const I18N = {
     briefQuestions: [
       { id: "sq1", text: "SQ1. Have you ever had pain in your jaw, temple, in the ear, or in front of the ear?", type: "yesno", required: true },
       { id: "sq2", text: "SQ2. How long ago did this pain first begin?", type: "duration" },
-      { id: "sq3", text: "SQ3. In the last 30 days, which option best describes this pain?", type: "single", options: [["sem", "No pain"], ["intermitente", "Pain comes and goes"], ["constante", "Pain is always present"]] },
-      { id: "sq4", text: "SQ4. In the last 30 days, did these activities change jaw or temple pain?", type: "multiYesNo", items: ["Chewing hard or tough food", "Opening the mouth or moving the jaw", "Keeping teeth together, clenching, grinding, or chewing gum", "Talking, kissing, or yawning"] },
+      { id: "sq3", text: "SQ3. In the last 30 days, which option best describes any pain in your jaw, temple, ear, or in front of the ear (on either side)?", note: "If the answer is “No pain”, skip to question SQ5.", type: "single", options: [["sem", "No pain"], ["intermitente", "Pain comes and goes"], ["constante", "Pain is always present"]] },
+      { id: "sq4", text: "SQ4. In the last 30 days, did any of these activities change your pain in the jaw or temple? Consider pain on either side of the face and changes for better or worse.", type: "multiYesNo", items: ["Chewing hard or tough food", "Opening the mouth or moving the jaw", "Keeping teeth together, clenching, grinding, or chewing gum", "Talking, kissing, or yawning"] },
       { id: "sq5", text: "SQ5. In the last 30 days, have you had a headache that included the temple area?", type: "yesno", required: true },
       { id: "sq6", text: "SQ6. How long ago did this temple headache first begin?", type: "duration" },
-      { id: "sq7", text: "SQ7. In the last 30 days, did jaw activities change this headache?", type: "multiYesNo", items: ["Chewing hard or tough food", "Opening the mouth or moving the jaw", "Keeping teeth together, clenching, grinding, or chewing gum", "Talking, kissing, or yawning"] },
+      { id: "sq7", text: "SQ7. In the last 30 days, did any of these activities change your headache in the temple area? Consider either side of the head and changes for better or worse.", type: "multiYesNo", items: ["Chewing hard or tough food", "Opening the mouth or moving the jaw", "Keeping teeth together, clenching, grinding, or chewing gum", "Talking, kissing, or yawning"] },
       { id: "sq8", text: "SQ8. In the last 30 days, did you have any TMJ noise when moving or using your jaw?", type: "yesno", required: true },
       { id: "sq9", text: "SQ9. Has your jaw ever locked or caught, even briefly, so it would not open all the way?", type: "yesno", required: true },
       { id: "sq10", text: "SQ10. Was the locking severe enough to limit mouth opening and interfere with eating?", type: "yesno" },
@@ -351,7 +377,7 @@ const I18N = {
       "Have you felt that life in general was less enjoyable because of problems with your facial bones (maxilla and mandible), teeth, or mouth?",
       "Have you been unable to work at full capacity because of problems with your facial bones (maxilla and mandible), teeth, or mouth?"
     ],
-    gcpsItems: ["Facial pain right now", "Worst facial pain in the last 30 days", "Average facial pain in the last 30 days", "Interference with daily activities", "Interference with recreational, social, and family activities", "Interference with ability to work, including household tasks"],
+    gcpsItems: ["How would you rate your facial pain RIGHT NOW?", "In the LAST 30 DAYS, how would you rate your WORST facial pain?", "In the LAST 30 DAYS, ON AVERAGE, how would you rate your facial pain?", "In the LAST 30 DAYS, how much did facial pain interfere with your DAILY ACTIVITIES?", "In the LAST 30 DAYS, how much did facial pain interfere with your RECREATIONAL, SOCIAL, AND FAMILY ACTIVITIES?", "In the LAST 30 DAYS, how much did facial pain interfere with your ABILITY TO WORK, including household tasks?"],
     phqItems: ["Feeling nervous, anxious, or on edge", "Not being able to stop or control worrying", "Feeling down, depressed, or hopeless", "Little interest or pleasure in doing things"],
     palpationItems: [["palpTemporalD", "Right anterior temporalis"], ["palpTemporalE", "Left anterior temporalis"], ["palpMasseterD", "Right masseter"], ["palpMasseterE", "Left masseter"], ["palpAtmD", "Right TMJ"], ["palpAtmE", "Left TMJ"]]
   },
@@ -385,7 +411,20 @@ const I18N = {
       palpation: "4. Palpación muscular y ATM",
       axis2: "Eje 2 psicosocial",
       gcpsTitle: "Escala Graduada de Dolor Crónico (GCPS) - 30 días",
-      phqDifficulty: "Dificultad causada por estos problemas",
+      ohipLegend: "Nunca (0) / Raramente (1) / A veces (2) / Repetidamente (3) / Siempre (4)",
+      gcpsPainLegend: "0 — Sin dolor / 10 — Dolor tan intenso como sea posible",
+      gcpsInterferenceLegend: "Sin interferencia (0) — Incapaz de realizar cualquier actividad (10)",
+      gcpsPainDays: "En los últimos 30 días, ¿durante cuántos días tuvo dolor facial?",
+      gcpsDisabilityDays: "En los últimos 30 días, ¿durante cuántos días el dolor facial le impidió realizar sus actividades habituales?",
+      gcpsDaysHint: "Ingrese un valor de 0 a 30 días",
+      gcpsIncomplete: "GCPS incompleta: ingrese los días con dolor y los días de discapacidad.",
+      interferenceLabel: "Interferencia",
+      disabilityPointsLabel: "Puntos de discapacidad",
+      gcpsGradeLabel: "Grado de dolor crónico",
+      gcpsGrades: ["0 — Sin dolor", "I — Dolor de baja intensidad, sin discapacidad", "II — Dolor de alta intensidad, sin discapacidad", "III — Moderadamente limitante", "IV — Severamente limitante"],
+      phqPrompt: "En las ÚLTIMAS 2 SEMANAS, ¿con qué frecuencia le ha molestado alguno de estos problemas?",
+      phqLegend: "Ninguna vez (0) / Varios días (1) / Más de la mitad de los días (2) / Casi todos los días (3)",
+      phqDifficulty: "Si marcó alguno de los problemas, ¿cuánto le han dificultado trabajar, cuidar las cosas de casa o relacionarse con otras personas?",
       resultTitle: "Resultado y manejo",
       synthesis: "Síntesis",
       sendTitle: "Envío de datos",
@@ -472,11 +511,11 @@ const I18N = {
     briefQuestions: [
       { id: "sq1", text: "SQ1. ¿Alguna vez tuvo dolor en la mandíbula, sien, oído o delante del oído?", type: "yesno", required: true },
       { id: "sq2", text: "SQ2. ¿Hace cuánto tiempo comenzó ese dolor por primera vez?", type: "duration" },
-      { id: "sq3", text: "SQ3. En los últimos 30 días, ¿qué opción describe mejor ese dolor?", type: "single", options: [["sem", "Sin dolor"], ["intermitente", "El dolor va y viene"], ["constante", "El dolor está siempre presente"]] },
-      { id: "sq4", text: "SQ4. En los últimos 30 días, ¿estas actividades modificaron el dolor en mandíbula o sien?", type: "multiYesNo", items: ["Masticar alimento duro o resistente", "Abrir la boca o mover la mandíbula", "Mantener dientes juntos, apretar, rechinar o mascar chicle", "Hablar, besar o bostezar"] },
+      { id: "sq3", text: "SQ3. En los últimos 30 días, ¿qué opción describe mejor cualquier dolor en la mandíbula, sien, oído o delante del oído (en cualquiera de los lados)?", note: "Si la respuesta es “Sin dolor”, pase a la pregunta SQ5.", type: "single", options: [["sem", "Sin dolor"], ["intermitente", "El dolor va y viene"], ["constante", "El dolor está siempre presente"]] },
+      { id: "sq4", text: "SQ4. En los últimos 30 días, ¿alguna de estas actividades modificó el dolor en la mandíbula o la sien? Considere el dolor en cualquier lado de la cara y cambios para mejor o peor.", type: "multiYesNo", items: ["Masticar alimento duro o resistente", "Abrir la boca o mover la mandíbula", "Mantener dientes juntos, apretar, rechinar o mascar chicle", "Hablar, besar o bostezar"] },
       { id: "sq5", text: "SQ5. En los últimos 30 días, ¿tuvo dolor de cabeza que incluyera la región de la sien?", type: "yesno", required: true },
       { id: "sq6", text: "SQ6. ¿Hace cuánto tiempo comenzó ese dolor de cabeza en la sien?", type: "duration" },
-      { id: "sq7", text: "SQ7. En los últimos 30 días, ¿actividades mandibulares modificaron ese dolor de cabeza?", type: "multiYesNo", items: ["Masticar alimento duro o resistente", "Abrir la boca o mover la mandíbula", "Mantener dientes juntos, apretar, rechinar o mascar chicle", "Hablar, besar o bostezar"] },
+      { id: "sq7", text: "SQ7. En los últimos 30 días, ¿alguna de estas actividades modificó el dolor de cabeza en la región de la sien? Considere cualquier lado de la cabeza y cambios para mejor o peor.", type: "multiYesNo", items: ["Masticar alimento duro o resistente", "Abrir la boca o mover la mandíbula", "Mantener dientes juntos, apretar, rechinar o mascar chicle", "Hablar, besar o bostezar"] },
       { id: "sq8", text: "SQ8. En los últimos 30 días, ¿tuvo algún ruido en la ATM al mover o usar la mandíbula?", type: "yesno", required: true },
       { id: "sq9", text: "SQ9. ¿La mandíbula alguna vez se bloqueó o quedó trabada, aunque fuera por un momento, sin abrir totalmente?", type: "yesno", required: true },
       { id: "sq10", text: "SQ10. ¿El bloqueo fue suficientemente grave para limitar la apertura e interferir con la alimentación?", type: "yesno" },
@@ -509,7 +548,7 @@ const I18N = {
       "¿Sintió que la vida en general fue menos placentera debido a problemas con los huesos de la cara (maxilar y mandíbula), dientes o boca?",
       "¿Fue incapaz de trabajar con pleno rendimiento por causa de problemas con los huesos de la cara (maxilar y mandíbula), dientes o boca?"
     ],
-    gcpsItems: ["Dolor facial ahora", "Peor dolor facial en los últimos 30 días", "Dolor facial promedio en los últimos 30 días", "Interferencia en actividades diarias", "Interferencia en actividades recreativas, sociales y familiares", "Interferencia en la capacidad de trabajar, incluidas tareas domésticas"],
+    gcpsItems: ["¿Cómo evaluaría su dolor facial AHORA?", "En los ÚLTIMOS 30 DÍAS, ¿cómo evaluaría su PEOR dolor facial?", "En los ÚLTIMOS 30 DÍAS, EN PROMEDIO, ¿cómo evaluaría su dolor facial?", "En los ÚLTIMOS 30 DÍAS, ¿cuánto interfirió el dolor facial en sus ACTIVIDADES DIARIAS?", "En los ÚLTIMOS 30 DÍAS, ¿cuánto interfirió el dolor facial en sus ACTIVIDADES RECREATIVAS, SOCIALES Y FAMILIARES?", "En los ÚLTIMOS 30 DÍAS, ¿cuánto interfirió el dolor facial en su CAPACIDAD PARA TRABAJAR, incluidas las tareas domésticas?"],
     phqItems: ["Sentirse nervioso(a), ansioso(a) o al límite", "No poder parar o controlar la preocupación", "Sentirse decaído(a), deprimido(a) o sin esperanza", "Poco interés o placer en hacer las cosas"],
     palpationItems: [["palpTemporalD", "Temporal anterior derecho"], ["palpTemporalE", "Temporal anterior izquierdo"], ["palpMasseterD", "Masetero derecho"], ["palpMasseterE", "Masetero izquierdo"], ["palpAtmD", "ATM derecha"], ["palpAtmE", "ATM izquierda"]]
   }
@@ -561,7 +600,7 @@ function renderBriefDc() {
         </div></div>
       `).join("")}</div>`;
     }
-    return `<div class="question"><p>${q.text}</p>${body}</div>`;
+    return `<div class="question" data-question-id="${q.id}"><p>${q.text}</p>${body}${q.note ? `<p class="question-note">${q.note}</p>` : ""}</div>`;
   }).join("");
 }
 
@@ -571,22 +610,40 @@ function renderScales() {
     <div class="ruler-row">
       <div>
         <strong>${index + 1}. ${item}</strong>
-        <div class="ruler-labels"><span>${ui.never}</span><span>${ui.rarely}</span><span>${ui.sometimes}</span><span>${ui.repeatedly}</span><span>${ui.always}</span></div>
       </div>
       <div class="ruler-control">
-        <input class="ruler ohip-ruler" name="ohip_${index}" type="range" min="0" max="4" step="1" value="0" data-labels="${ui.never},${ui.rarely},${ui.sometimes},${ui.repeatedly},${ui.always}">
+        <div class="ruler-scale">
+          <input class="ruler ohip-ruler" name="ohip_${index}" type="range" min="0" max="4" step="1" value="0" data-labels="${ui.never},${ui.rarely},${ui.sometimes},${ui.repeatedly},${ui.always}">
+          <div class="ruler-labels"><span>${ui.never}</span><span>${ui.always}</span></div>
+        </div>
         <output>${ui.never}</output>
       </div>
     </div>`).join("");
 
-  document.querySelector("#gcpsItems").innerHTML = gcpsItems.map((item, index) => `
+  const gcpsPainDays = `
+    <div class="gcps-number-row">
+      <label>1. ${ui.gcpsPainDays}
+        <input name="gcpsPainDays" type="number" min="0" max="30" step="1" inputmode="numeric" placeholder="${ui.gcpsDaysHint}">
+      </label>
+    </div>`;
+  const gcpsDisabilityDays = `
+    <div class="gcps-number-row">
+      <label>5. ${ui.gcpsDisabilityDays}
+        <input name="gcpsDisabilityDays" type="number" min="0" max="30" step="1" inputmode="numeric" placeholder="${ui.gcpsDaysHint}">
+      </label>
+    </div>`;
+  const gcpsInterferenceLegend = `<p class="scale-legend gcps-interference-legend">${ui.gcpsInterferenceLegend}</p>`;
+  document.querySelector("#gcpsItems").innerHTML = gcpsPainDays + gcpsItems.map((item, index) => `
+    ${index === 3 ? `${gcpsDisabilityDays}${gcpsInterferenceLegend}` : ""}
     <div class="ruler-row">
       <div>
-        <strong>${index + 1}. ${item}</strong>
-        <div class="ruler-labels"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+        <strong>${index < 3 ? index + 2 : index + 3}. ${item}</strong>
       </div>
       <div class="ruler-control">
-        <input class="ruler pain-ruler" name="gcps_${index}" type="range" min="0" max="10" step="1" value="0">
+        <div class="ruler-scale">
+          <input class="ruler pain-ruler" name="gcps_${index}" type="range" min="0" max="10" step="1" value="0">
+          <div class="ruler-labels"><span>0</span><span>5</span><span>10</span></div>
+        </div>
         <output>0</output>
       </div>
     </div>
@@ -596,10 +653,12 @@ function renderScales() {
     <div class="ruler-row">
       <div>
         <strong>${index + 1}. ${item}</strong>
-        <div class="ruler-labels"><span>${ui.none}</span><span>${ui.severalDays}</span><span>${ui.halfDays}</span><span>${ui.nearlyEveryDay}</span></div>
       </div>
       <div class="ruler-control">
-        <input class="ruler phq-ruler" name="phq_${index}" type="range" min="0" max="3" step="1" value="0" data-labels="${ui.none},${ui.severalDays},${ui.halfDays},${ui.nearlyEveryDay}">
+        <div class="ruler-scale">
+          <input class="ruler phq-ruler" name="phq_${index}" type="range" min="0" max="3" step="1" value="0" data-labels="${ui.none},${ui.severalDays},${ui.halfDays},${ui.nearlyEveryDay}">
+          <div class="ruler-labels"><span>${ui.none}</span><span>${ui.nearlyEveryDay}</span></div>
+        </div>
         <output>${ui.none}</output>
       </div>
     </div>
@@ -645,6 +704,60 @@ function anyPrefix(obj, prefix) {
   return Object.keys(obj).some((key) => key.startsWith(prefix) && obj[key] === "1");
 }
 
+function gcpsPointScores(disabilityDays, interference) {
+  const dayPoints = disabilityDays <= 1 ? 0 : disabilityDays === 2 ? 1 : disabilityDays <= 5 ? 2 : 3;
+  const interferencePoints = interference < 30 ? 0 : interference < 50 ? 1 : interference < 70 ? 2 : 3;
+  return { dayPoints, interferencePoints, totalDisabilityPoints: dayPoints + interferencePoints };
+}
+
+function calculateGcps(values, painDaysRaw, disabilityDaysRaw) {
+  const painDaysPresent = painDaysRaw !== undefined && painDaysRaw !== null && painDaysRaw !== "";
+  const disabilityDaysPresent = disabilityDaysRaw !== undefined && disabilityDaysRaw !== null && disabilityDaysRaw !== "";
+  const wasFilled = values.some((n) => n > 0) || painDaysPresent || disabilityDaysPresent;
+  const painDays = painDaysPresent ? Number(painDaysRaw) : null;
+  const disabilityDays = disabilityDaysPresent ? Number(disabilityDaysRaw) : null;
+  const daysAreValid = Number.isInteger(painDays) && painDays >= 0 && painDays <= 30
+    && Number.isInteger(disabilityDays) && disabilityDays >= 0 && disabilityDays <= 30;
+  const complete = wasFilled && daysAreValid && values.length === 6 && values.every(Number.isFinite);
+
+  if (!complete) {
+    return {
+      gcpsWasFilled: wasFilled,
+      gcpsComplete: false,
+      gcpsPainDays: painDays,
+      gcpsDisabilityDays: disabilityDays,
+      cpi: null,
+      interference: null,
+      disabilityDayPoints: null,
+      interferencePoints: null,
+      totalDisabilityPoints: null,
+      gcpsGrade: null
+    };
+  }
+
+  const cpi = ((values[0] + values[1] + values[2]) / 3) * 10;
+  const interference = ((values[3] + values[4] + values[5]) / 3) * 10;
+  const points = gcpsPointScores(disabilityDays, interference);
+  const gcpsGrade = cpi === 0 ? 0
+    : points.totalDisabilityPoints >= 5 ? 4
+    : points.totalDisabilityPoints >= 3 ? 3
+    : cpi >= 50 ? 2
+    : 1;
+
+  return {
+    gcpsWasFilled: true,
+    gcpsComplete: true,
+    gcpsPainDays: painDays,
+    gcpsDisabilityDays: disabilityDays,
+    cpi,
+    interference,
+    disabilityDayPoints: points.dayPoints,
+    interferencePoints: points.interferencePoints,
+    totalDisabilityPoints: points.totalDisabilityPoints,
+    gcpsGrade
+  };
+}
+
 function calcScores(obj) {
   const ui = language().ui;
   const ohipValues = ohipItems.map((_, i) => Number(obj[`ohip_${i}`] ?? 0)).filter((n) => !Number.isNaN(n));
@@ -654,14 +767,13 @@ function calcScores(obj) {
 
   const gcps = gcpsItems.map((_, i) => Number(obj[`gcps_${i}`] || 0));
   const phq = phqItems.map((_, i) => Number(obj[`phq_${i}`] || 0));
-  const eixo2WasFilled = gcps.some((n) => n > 0) || phq.some((n) => n > 0) || Boolean(obj.phqDificuldade);
-  const cpi = eixo2WasFilled ? ((gcps[0] + gcps[1] + gcps[2]) / 3) * 10 : null;
-  const disability = eixo2WasFilled ? ((gcps[3] + gcps[4] + gcps[5]) / 3) * 10 : null;
-  const phqAnxiety = eixo2WasFilled ? phq[0] + phq[1] : null;
-  const phqDepression = eixo2WasFilled ? phq[2] + phq[3] : null;
-  const phqTotal = eixo2WasFilled ? phqAnxiety + phqDepression : null;
+  const gcpsScore = calculateGcps(gcps, obj.gcpsPainDays, obj.gcpsDisabilityDays);
+  const phqWasFilled = phq.some((n) => n > 0) || Boolean(obj.phqDificuldade);
+  const phqAnxiety = phqWasFilled ? phq[0] + phq[1] : null;
+  const phqDepression = phqWasFilled ? phq[2] + phq[3] : null;
+  const phqTotal = phqWasFilled ? phqAnxiety + phqDepression : null;
 
-  return { ohipTotal, ohipLevel, cpi, disability, phqAnxiety, phqDepression, phqTotal };
+  return { ohipTotal, ohipLevel, ...gcpsScore, phqAnxiety, phqDepression, phqTotal };
 }
 
 function diagnose(obj) {
@@ -695,7 +807,7 @@ function priority(obj, scores, diagnoses) {
   if (Number(obj.aberturaMaxima || 99) < 35) points += 18;
   if (scores.ohipTotal !== null) points += Math.min(18, scores.ohipTotal / 88 * 18);
   if (scores.cpi !== null) points += Math.min(16, scores.cpi / 100 * 16);
-  if (scores.disability !== null) points += Math.min(16, scores.disability / 100 * 16);
+  if (scores.interference !== null) points += Math.min(16, scores.interference / 100 * 16);
   if (scores.phqTotal !== null) points += Math.min(10, scores.phqTotal / 12 * 10);
 
   if (points >= 70) return { label: labels.veryHigh, className: "urgent", points: Math.round(points) };
@@ -711,7 +823,7 @@ function management(diagnoses, scores) {
   if (diagnoses.some((d) => d.key === "arthralgia" || d.key === "degenerative")) items.push(labels.jointPain);
   if (diagnoses.some((d) => d.key === "discReduction" || d.key === "discLimited")) items.push(labels.disc);
   if (diagnoses.some((d) => d.key === "subluxation")) items.push(labels.subluxation);
-  if ((scores.phqTotal ?? 0) >= 6 || (scores.disability ?? 0) >= 50) items.push(labels.psychosocial);
+  if ((scores.phqTotal ?? 0) >= 6 || (scores.gcpsGrade ?? 0) >= 3) items.push(labels.psychosocial);
   return items;
 }
 
@@ -722,6 +834,12 @@ function renderResults() {
   const diagnoses = diagnose(obj);
   const prio = priority(obj, scores, diagnoses);
   const care = management(diagnoses, scores);
+  const gcpsResult = !scores.gcpsWasFilled
+    ? ui.notFilled
+    : !scores.gcpsComplete
+      ? ui.gcpsIncomplete
+      : `${ui.cpiLabel} ${scores.cpi.toFixed(1)}/100 | ${ui.interferenceLabel} ${scores.interference.toFixed(1)}/100 | ${ui.disabilityPointsLabel} ${scores.totalDisabilityPoints}/6 | ${ui.gcpsGradeLabel}: ${ui.gcpsGrades[scores.gcpsGrade]}`;
+  const phqResult = scores.phqTotal === null ? ui.notFilled : `${scores.phqTotal}/12`;
   const html = `
     <article class="result-card">
       <h2>${ui.clinicalDiagnosis}</h2>
@@ -737,7 +855,8 @@ function renderResults() {
     </article>
     <article class="result-card">
       <h2>${ui.axis2Label}</h2>
-      <p>${scores.cpi === null ? ui.notFilled : `${ui.cpiLabel} ${scores.cpi.toFixed(1)} | ${ui.disabilityLabel} ${scores.disability.toFixed(1)} | PHQ-4 ${scores.phqTotal}/12`}</p>
+      <p><strong>GCPS:</strong> ${gcpsResult}</p>
+      <p><strong>PHQ-4:</strong> ${phqResult}</p>
     </article>
     <article class="result-card full">
       <h2>${ui.careStrategies}</h2>
@@ -780,10 +899,11 @@ function restoreDraftFromObject(obj) {
   });
   syncAllPalpation();
   updateAllRulers();
+  syncBriefSkip();
 }
 
 function updateRuler(input) {
-  const output = input.parentElement.querySelector("output");
+  const output = input.closest(".ruler-control")?.querySelector("output");
   if (!output) return;
   const labels = input.dataset.labels?.split(",");
   output.textContent = labels ? labels[Number(input.value)] : input.value;
@@ -795,6 +915,16 @@ function updateRuler(input) {
 
 function updateAllRulers() {
   form.querySelectorAll(".ruler").forEach(updateRuler);
+}
+
+function syncBriefSkip() {
+  const sq4 = form.querySelector('[data-question-id="sq4"]');
+  if (!sq4) return;
+  const shouldSkip = form.elements.sq3?.value === "sem";
+  sq4.classList.toggle("is-skipped", shouldSkip);
+  sq4.querySelectorAll("input, select, textarea").forEach((field) => {
+    field.disabled = shouldSkip;
+  });
 }
 
 function syncPalpation(name) {
@@ -856,6 +986,10 @@ function applyStaticLanguage() {
   const axis2Headings = document.querySelectorAll('[data-view="4"] h2');
   axis2Headings[0].textContent = ui.gcpsTitle;
   axis2Headings[1].textContent = "PHQ-4";
+  document.querySelector("#ohipLegend").textContent = ui.ohipLegend;
+  document.querySelector("#gcpsPainLegend").textContent = ui.gcpsPainLegend;
+  document.querySelector("#phqPrompt").textContent = ui.phqPrompt;
+  document.querySelector("#phqLegend").textContent = ui.phqLegend;
   document.querySelector("#prevBtn").textContent = ui.back;
   document.querySelector("#nextBtn").textContent = ui.next;
   document.querySelector('button[type="submit"]').textContent = ui.submit;
@@ -1016,6 +1150,10 @@ form.addEventListener("input", (event) => {
 form.addEventListener("change", saveDraft);
 form.addEventListener("change", (event) => {
   if (event.target.classList.contains("ruler")) updateRuler(event.target);
+  if (event.target.name === "sq3") {
+    syncBriefSkip();
+    saveDraft();
+  }
   if (event.target.dataset.palpationNone) {
     const name = event.target.dataset.palpationNone;
     if (event.target.checked) {
