@@ -1086,54 +1086,72 @@ function validateBeforeSubmit() {
   return false;
 }
 
-async function sendPayload(payload) {
-  const endpoint = SEND_ENDPOINT;
-  if (!endpoint) return { ok: false, message: language().ui.missingEndpoint };
+let androidSubmission = null;
 
+window.handleAndroidSubmissionResult = (result) => {
+  if (!androidSubmission) return;
+
+  const submission = androidSubmission;
+  androidSubmission = null;
+  clearTimeout(submission.timeoutId);
+
+  if (result?.ok) {
+    submission.resolve({ ok: true, message: language().ui.sent });
+  } else {
+    submission.reject(new Error(result?.error || language().ui.missingEndpoint));
+  }
+};
+
+function sendPayloadFromAndroid(payload) {
   return new Promise((resolve, reject) => {
-    const frameName = `cuidador-submit-${Date.now()}`;
-    const iframe = document.createElement("iframe");
-    const submitForm = document.createElement("form");
-    const input = document.createElement("input");
-    let settled = false;
+    if (androidSubmission) {
+      reject(new Error(language().ui.sending));
+      return;
+    }
 
-    const cleanup = () => {
-      setTimeout(() => {
-        iframe.remove();
-        submitForm.remove();
-      }, 1000);
-    };
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      resolve({ ok: true, message: language().ui.sent });
-    };
+    const timeoutId = setTimeout(() => {
+      if (!androidSubmission) return;
+      androidSubmission = null;
+      reject(new Error(language().ui.missingEndpoint));
+    }, 60000);
 
-    iframe.name = frameName;
-    iframe.hidden = true;
-    submitForm.method = "POST";
-    submitForm.action = endpoint;
-    submitForm.target = frameName;
-    submitForm.hidden = true;
-
-    input.type = "hidden";
-    input.name = "payload";
-    input.value = JSON.stringify(payload);
-    submitForm.appendChild(input);
-
-    document.body.appendChild(iframe);
-    document.body.appendChild(submitForm);
-
+    androidSubmission = { resolve, reject, timeoutId };
     try {
-      submitForm.submit();
-      setTimeout(finish, 2200);
+      window.CuidaDorAndroid.sendPayload(JSON.stringify(payload));
     } catch (error) {
-      settled = true;
-      cleanup();
+      clearTimeout(timeoutId);
+      androidSubmission = null;
       reject(error);
     }
   });
+}
+
+async function sendPayload(payload) {
+  const endpoint = SEND_ENDPOINT;
+  if (!endpoint) return { ok: false, message: language().ui.missingEndpoint };
+  if (window.CuidaDorAndroid?.sendPayload) {
+    return sendPayloadFromAndroid(payload);
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: new URLSearchParams({ payload: JSON.stringify(payload) }),
+      signal: controller.signal,
+      credentials: "omit",
+      redirect: "follow"
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    if (result.ok !== true) {
+      throw new Error(result.error || language().ui.missingEndpoint);
+    }
+    return { ok: true, message: language().ui.sent };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 setLanguage(currentLang, false);
@@ -1180,17 +1198,22 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!validateBeforeSubmit()) return;
   const submitButton = event.submitter || form.querySelector('button[type="submit"]');
+  if (submitButton.disabled) return;
+  const originalLabel = submitButton.textContent;
   submitButton.disabled = true;
+  submitButton.textContent = language().ui.sending;
   setSubmitStatus(language().ui.sending, "");
-  const payload = { enviadoEm: new Date().toISOString(), ...renderResults() };
-  saveDraft();
   try {
+    const payload = { enviadoEm: new Date().toISOString(), ...renderResults() };
+    saveDraft();
     const result = await sendPayload(payload);
     if (result.ok) clearSubmittedForm();
     setSubmitStatus(result.message, "success");
   } catch (error) {
-    setSubmitStatus(language().ui.missingEndpoint, "error");
+    const detail = error?.message ? ` ${error.message}` : "";
+    setSubmitStatus(`${language().ui.missingEndpoint}${detail}`, "error");
   } finally {
     submitButton.disabled = false;
+    submitButton.textContent = originalLabel;
   }
 });
