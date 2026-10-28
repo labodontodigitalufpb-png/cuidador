@@ -44,6 +44,11 @@
             <button type="button" class="lang-button" data-lang="en">English</button>
             <button type="button" class="lang-button" data-lang="es">Español</button>
           </div>
+          <div class="exam-block">
+            <label>Retomar acompanhamento salvo neste dispositivo<select id="savedPatient"><option value="">Selecione um registro enviado</option></select></label>
+            <button type="button" id="loadPatient">Abrir registro e substituir rascunho atual</button>
+            <p id="patientHistoryStatus" role="status"></p>
+          </div>
           <div class="identity-card">
           <div class="grid two">
             <label>Nome<input name="nome" required></label>
@@ -72,6 +77,10 @@
           <div class="grid two">
             <label>Examinador (Cirurgiao Dentista)<input name="examinador" required></label>
             <label>Especialidade do examinador<input name="especialidade"></label>
+          </div>
+          <div class="grid">
+            <label>Motivo da consulta / queixa principal<textarea name="queixaPrincipal" rows="3"></textarea></label>
+            <label>História da doença atual<textarea name="historiaDoencaAtual" rows="5"></textarea></label>
           </div>
           </div>
           <div class="lab-footer">
@@ -112,6 +121,7 @@
               <label class="check-button"><input type="checkbox" name="clickEsquerdo"> <span>Clique/estalido esquerdo em abertura ou fechamento</span></label>
               <label class="check-button"><input type="checkbox" name="crepitacaoDireita"> <span>Crepitacao direita</span></label>
               <label class="check-button"><input type="checkbox" name="crepitacaoEsquerda"> <span>Crepitacao esquerda</span></label>
+              <label class="check-button"><input type="checkbox" name="semRuidos"> <span>Sem ruídos</span></label>
             </div>
           </div>
           <div class="exam-block">
@@ -120,6 +130,7 @@
               <label class="check-button"><input type="checkbox" name="travamentoObservado"> <span>Travamento observado no exame</span></label>
               <label class="check-button"><input type="checkbox" name="limitacaoAbertura"> <span>Limitacao de abertura presente</span></label>
               <label class="check-button"><input type="checkbox" name="travamentoAberta"> <span>Travamento em boca aberta observado</span></label>
+              <label class="check-button"><input type="checkbox" name="semTravamento"> <span>Sem travamento</span></label>
             </div>
           </div>
           <div class="exam-block">
@@ -168,6 +179,20 @@
             <h1>Resultado e conduta</h1>
           </div>
           <div id="results" class="results"></div>
+          <section class="exam-block" aria-labelledby="followupTitle">
+            <h2 id="followupTitle">Evolução e reavaliação</h2>
+            <p>Registre a data e o que foi feito em cada atendimento. A reavaliação repete os itens do exame físico e mantém o exame inicial.</p>
+            <div id="followupVisits"></div>
+            <button type="button" id="addFollowup">Adicionar atendimento</button>
+          </section>
+          <section class="exam-block" aria-labelledby="attachmentsTitle">
+            <h2 id="attachmentsTitle">Exames e imagens</h2>
+            <label>Anexar arquivos (PDF, JPEG, PNG ou WebP; até 2 MB por arquivo e 6 MB no total)
+              <input id="clinicalFiles" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" multiple>
+            </label>
+            <p id="attachmentStatus" role="status" aria-live="polite"></p>
+            <ul id="clinicalFileList"></ul>
+          </section>
         </section>
 
         <footer class="actions">
@@ -178,6 +203,7 @@
       </form>
     </main>
 
-    <script src="app-20260522-3.js?v=20261028-1"></script>
+    <script src="followup.js?v=20261028-2"></script>
+    <script src="app-20260522-3.js?v=20261028-2"></script>
   </body>
 </html>

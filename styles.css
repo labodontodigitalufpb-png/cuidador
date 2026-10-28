@@ -648,3 +648,10 @@ a { color: var(--navy); }
   .submit-status { flex-basis: 100%; }
   .actions button { flex: 1 1 42%; }
 }
+
+textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 80px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+.followup-visit { margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; }
+.followup-visit summary { cursor: pointer; font-weight: 700; margin: 16px 0; }
+.followup-visit .grid { margin-bottom: 14px; }
+#clinicalFileList li { overflow-wrap: anywhere; margin: 10px 0; }
+#clinicalFileList button { margin-left: 12px; }

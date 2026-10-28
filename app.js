@@ -687,12 +687,13 @@ function data() {
     if (obj[key] !== undefined) obj[key] = [].concat(obj[key], value);
     else obj[key] = value;
   });
-  form.querySelectorAll("input[type=checkbox]").forEach((input) => obj[input.name] = input.checked);
+  form.querySelectorAll("input[type=checkbox][name]").forEach((input) => obj[input.name] = input.checked);
   palpationItems.forEach(([name]) => {
     const pain = form.querySelector(`[name="${name}_dor"]`)?.checked;
     const familiar = form.querySelector(`[name="${name}_dorFamiliar"]`)?.checked;
     obj[name] = familiar ? "2" : pain ? "1" : "0";
   });
+  obj.atendimentos = window.ClinicalFollowup.collect();
   return obj;
 }
 
@@ -884,7 +885,9 @@ function restoreDraft() {
 }
 
 function restoreDraftFromObject(obj) {
+  window.ClinicalFollowup.restore(obj.atendimentos || []);
   Object.entries(obj).forEach(([key, value]) => {
+    if (key === "atendimentos") return;
     const fields = [...form.querySelectorAll(`[name="${CSS.escape(key)}"]`)];
     fields.forEach((field) => {
       if (field.type === "checkbox") field.checked = Boolean(value);
@@ -903,6 +906,7 @@ function restoreDraftFromObject(obj) {
 }
 
 function clearSubmittedForm() {
+  window.ClinicalFollowup.clear();
   localStorage.removeItem(STORAGE_KEY);
   form.reset();
   syncAllPalpation();
@@ -1096,7 +1100,7 @@ window.handleAndroidSubmissionResult = (result) => {
   clearTimeout(submission.timeoutId);
 
   if (result?.ok) {
-    submission.resolve({ ok: true, message: language().ui.sent });
+    submission.resolve({ ...result, ok: true, message: language().ui.sent });
   } else {
     submission.reject(new Error(result?.error || language().ui.missingEndpoint));
   }
@@ -1148,12 +1152,13 @@ async function sendPayload(payload) {
     if (result.ok !== true) {
       throw new Error(result.error || language().ui.missingEndpoint);
     }
-    return { ok: true, message: language().ui.sent };
+    return { ...result, ok: true, message: language().ui.sent };
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
+window.ClinicalFollowup.init();
 setLanguage(currentLang, false);
 renderBriefDc();
 renderScales();
@@ -1182,6 +1187,7 @@ form.addEventListener("change", (event) => {
     syncBriefSkip();
     saveDraft();
   }
+  if (event.target.name) window.ClinicalFollowup.syncAbsence(event.target, form);
   if (event.target.dataset.palpationNone) {
     const name = event.target.dataset.palpationNone;
     if (event.target.checked) {
@@ -1193,6 +1199,7 @@ form.addEventListener("change", (event) => {
   if (event.target.dataset.palpationOption) {
     syncPalpation(event.target.dataset.palpationOption);
   }
+  saveDraft();
 });
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1206,8 +1213,13 @@ form.addEventListener("submit", async (event) => {
   try {
     const payload = { enviadoEm: new Date().toISOString(), ...renderResults() };
     saveDraft();
+    payload.anexosClinicos = await window.ClinicalFollowup.prepareAttachments(SEND_ENDPOINT);
+    payload.atendimentos = JSON.stringify(payload.atendimentos);
     const result = await sendPayload(payload);
-    if (result.ok) clearSubmittedForm();
+    if (result.ok) {
+      window.ClinicalFollowup.archive(payload, result);
+      clearSubmittedForm();
+    }
     setSubmitStatus(result.message, "success");
   } catch (error) {
     const detail = error?.message ? ` ${error.message}` : "";

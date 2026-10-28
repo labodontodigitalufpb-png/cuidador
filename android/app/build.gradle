@@ -1,0 +1,49 @@
+apply plugin: "com.android.application"
+
+def webRoot = rootProject.projectDir.parentFile
+def generatedWebAssets = layout.buildDirectory.dir("generated/web-assets")
+
+tasks.register("syncWebAssets", Copy) {
+    from(webRoot) {
+        include "index.html"
+        include "styles.css"
+        include "followup.js"
+        include "app.js"
+        include "app-20260522-3.js"
+        include "assets/**"
+    }
+    into(generatedWebAssets)
+}
+
+android {
+    namespace = "br.ufpb.labodontodigital.cuidadorsus"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "br.ufpb.labodontodigital.cuidadorsus"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 6
+        versionName = "1.0.5"
+    }
+
+    sourceSets {
+        main.assets.srcDir(generatedWebAssets)
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+tasks.named("preBuild").configure {
+    dependsOn("syncWebAssets")
+}

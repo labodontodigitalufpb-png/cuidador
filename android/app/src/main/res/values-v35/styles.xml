@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.CuidaDorSUS" parent="@style/CuidaDorSUSBaseTheme">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+</resources>
