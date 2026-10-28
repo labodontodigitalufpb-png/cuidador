@@ -1044,6 +1044,7 @@ function applyStaticLanguage() {
     if (span) span.textContent = text;
   });
 
+  window.ClinicalFollowup.applyLanguage();
   document.querySelectorAll(".lang-button").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.lang === currentLang);
   });
