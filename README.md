@@ -17,7 +17,7 @@ Tambem e possivel abrir `index.html` diretamente no navegador.
 A APK instalavel para testes esta em:
 
 ```text
-CuidaDor-SUS-v1.0.5-debug.apk
+CuidaDor-SUS-v1.0.6-debug.apk
 ```
 
 O projeto Android fica em `android/` e incorpora automaticamente os arquivos

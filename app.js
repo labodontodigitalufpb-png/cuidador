@@ -1,5 +1,5 @@
 const STORAGE_KEY = "cuidador-sus-draft";
-const SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbwjnRhj4RZyRhilMfVuEPPLo3kIzEmHaNgws8WwTSwQZ-3hs-4dCM0Srl2XKj6PQr6v7w/exec";
+const SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbwwc4HBvKlHUF63wviE6RIFG805SqJrBaxY3knOdA5LgNdIB_JYGXEbdoYR57icE1Uc-g/exec";
 
 let briefQuestions = [
   { id: "sq1", text: "SQ1. Você já sentiu dor na mandíbula, têmpora (lateral), no ouvido ou na frente do ouvido em qualquer um dos lados?", type: "yesno", required: true },

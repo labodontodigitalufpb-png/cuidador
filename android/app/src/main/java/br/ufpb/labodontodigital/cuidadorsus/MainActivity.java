@@ -33,7 +33,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends Activity {
     private static final String APP_URL = "file:///android_asset/index.html";
     private static final String SUBMISSION_ENDPOINT =
-        "https://script.google.com/macros/s/AKfycbwjnRhj4RZyRhilMfVuEPPLo3kIzEmHaNgws8WwTSwQZ-3hs-4dCM0Srl2XKj6PQr6v7w/exec";
+        "https://script.google.com/macros/s/AKfycbwwc4HBvKlHUF63wviE6RIFG805SqJrBaxY3knOdA5LgNdIB_JYGXEbdoYR57icE1Uc-g/exec";
 
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
